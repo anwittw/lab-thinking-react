@@ -146,29 +146,24 @@ let colors = [
   "White",
   "Whitesmoke",
   "Yellow",
-  "Yellowgreen",
-]
+  "Yellowgreen"
+];
 
-let names = [
-  "t-shirt",
-  "pants",
-  "watch",
-  "socks",
-  "shoes",
-  "hat",
-  "glasses",
-]
+let names = ["t-shirt", "pants", "watch", "socks", "shoes", "hat", "glasses"];
 
-let products = []
+let products = [];
+let counter = 0;
 for (let iName = 0; iName < names.length; iName++) {
   for (let iColor = 0; iColor < colors.length; iColor++) {
-    let name = `${colors[iColor]} ${names[iName]}`
+    let name = `${colors[iColor]} ${names[iName]}`;
     products.push({
       price: `$${names[iName].length}.99`,
       stocked: name.length % 3 !== 0,
-      name 
-    })
+      name,
+      id: counter
+    });
+    counter++
   }
 }
 
-export default products
+export default products;

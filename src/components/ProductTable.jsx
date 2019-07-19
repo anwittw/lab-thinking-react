@@ -13,7 +13,7 @@ function ProductTable(props) {
 
   return (
     <div className="ProductTable">
-    {ProductsToDisplay.map((product) => <ProductRow key={product.name} price={product.price} stocked={product.stocked} name={product.name} />)}
+    {ProductsToDisplay.map((product, i) => <ProductRow key={product.name} price={product.price} stocked={product.stocked} name={product.name} id={product.id} />)}
     </div>
   );
 }

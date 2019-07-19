@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Col, Row } from "reactstrap";
 
 import SearchBar from "./SearchBar";
 import ProductTable from "./ProductTable";
 
-import listOfProducts from "../products.json";
-import { stat } from "fs";
+
 
 function FilterableProductTable({ products }) {
   const [state, setState] = useState({
@@ -22,16 +21,19 @@ function FilterableProductTable({ products }) {
 
     setState({
       ...state,
-      [name]: value
+      page: 1,
+      [name]: value,
     });
   }
 
-  let filteredListOfProducts = 
-    pagination(filterByStatus(filterByName(products))
-  );
+  let filteredListOfProducts = filterByStatus(filterByName(products));
+  let arrOfPages =  calculateNumberOfPages(filteredListOfProducts)
+  let paginatedListOfProducts = pagination(filteredListOfProducts);
+
+  console.log(arrOfPages)
 
   function filterByName(products) {
-    return products.filter(product => product.name.includes(state.filterText));
+    return products.filter(product => product.name.toUpperCase().includes(state.filterText.toUpperCase()));
   }
 
   function filterByStatus(products) {
@@ -44,7 +46,7 @@ function FilterableProductTable({ products }) {
 
   function pagination(products) {
     let lastIndex = state.page * 20;
-    let firstIndex = lastIndex - 20;
+    let firstIndex = Number(state.page) === 1 ? 0 : lastIndex - 19;
     if (products.length <= 20) {
       return products;
     } else {
@@ -52,17 +54,28 @@ function FilterableProductTable({ products }) {
     }
   }
 
+  function calculateNumberOfPages(filteredListOfProducts) {
+    let maxPage = Math.ceil(filteredListOfProducts.length / 20 )
+    let arrOfPages =[] 
+    for (let i = 1; i <= maxPage; i++) {arrOfPages.push(i)}
+    return arrOfPages
+  
+  }
+
   return (
     <div className="FilterableProductTable d-flex flex-column align-items-center border p-4">
       <h1>Welcome to our Webstore!</h1>
+      <pre>{JSON.stringify(state, null,2)}</pre> <br />
       <Row>
         <SearchBar
           filterText={state.filterText}
           inStockOnly={state.inStockOnly}
           handleChange={ (e) => handleChange(e)}
+          page = {state.page}
+          numberOfPages = {arrOfPages}
         />
       </Row>
-      <ProductTable products={filteredListOfProducts} />
+      <ProductTable products={paginatedListOfProducts} />
     </div>
   );
 }
